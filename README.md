@@ -40,13 +40,13 @@ implementation 'com.mewebstudio:spring-boot-jpa-slug:0.1.0'
 
 ```java
 import com.mewebstudio.springboot.jpa.slug.EnableSlug;
-import com.mewebstudio.springboot.jpa.slug.ISlugGenerator;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@SpringBootApplication
 @EnableSlug // Specify your custom generator if needed: @EnableSlug(generator = CustomSlugGenerator.class) 
-public class ApplicationConfig {
-    // Additional configuration if needed
+public class SlugJavaImplApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SlugJavaImplApplication.class, args);
+    }
 }
 ```
 
