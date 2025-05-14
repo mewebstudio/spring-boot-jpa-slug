@@ -115,12 +115,11 @@ public class SlugAutoConfiguration {
                 String slug = base;
                 int i = 2;
 
-                String entityId = entity instanceof ISlugSupport<?>
+                Object entityId = entity instanceof ISlugSupport<?>
                     ? (String) ((ISlugSupport<?>) entity).getId()
                     : null;
 
                 int attempt = 0;
-
                 while (slugExists(entity.getClass(), slug, entityId)) {
                     if (attempt++ >= MAX_ATTEMPTS) {
                         throw new SlugOperationException(
@@ -144,7 +143,7 @@ public class SlugAutoConfiguration {
      * @param entityId    the ID of the current entity (to exclude itself during updates)
      * @return {@code true} if the slug already exists for another entity, {@code false} otherwise
      */
-    protected boolean slugExists(Class<?> entityClass, String slug, String entityId) {
+    protected boolean slugExists(Class<?> entityClass, String slug, Object entityId) {
         TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 
@@ -158,7 +157,7 @@ public class SlugAutoConfiguration {
                 CriteriaQuery<Long> query = cb.createQuery(Long.class);
                 Root<?> root = query.from(entityClass);
 
-                if (entityId != null && !entityId.isBlank()) {
+                if (entityId != null) {
                     query.select(cb.count(root))
                         .where(
                             cb.and(
