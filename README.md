@@ -195,6 +195,20 @@ public class SlugOperationException extends RuntimeException {
 }
 ```
 
+---
+
+## 🛠 Requirements
+
+- Java 17+
+- Spring Boot 3.x
+- Spring Data JPA
+
+---
+
+## 🔁 Other Implementations
+
+[Spring Boot JPA Slug (Kotlin Maven Package)](https://github.com/mewebstudio/spring-boot-jpa-slug-kotlin)
+
 ## 🤝 Contributing
 We welcome contributions! Please fork this repository, make your changes, and submit a pull request. If you're fixing a bug, please provide steps to reproduce the issue and the expected behavior.
 
