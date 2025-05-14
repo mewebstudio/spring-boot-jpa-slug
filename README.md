@@ -69,10 +69,12 @@ public class CustomSlugGenerator implements ISlugGenerator {
 ```java
 import com.mewebstudio.springboot.jpa.slug.ISlugSupport;
 import com.mewebstudio.springboot.jpa.slug.SlugField;
+import com.mewebstudio.springboot.jpa.slug.SlugListener;
 
 import javax.persistence.Entity;
 
 @Entity
+@EntityListeners(SlugListener.class)
 public class MyEntity implements ISlugSupport<Long> {
     @Id
     private Long id;
