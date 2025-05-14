@@ -25,13 +25,13 @@ Add the following dependency to your `pom.xml`:
 <dependency>
   <groupId>com.mewebstudio</groupId>
   <artifactId>spring-boot-jpa-slug</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
 </dependency>
 ```
 
 #### for Gradle users
 ```groovy
-implementation 'com.mewebstudio:spring-boot-jpa-slug:0.1.0'
+implementation 'com.mewebstudio:spring-boot-jpa-slug:0.1.1'
 ```
 
 ## 🚀 Usage
