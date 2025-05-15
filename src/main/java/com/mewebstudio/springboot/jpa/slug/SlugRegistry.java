@@ -13,7 +13,7 @@ public class SlugRegistry {
      * <p>
      * This instance is used for generating slugs across the application.
      */
-    private static ISlugProvider ISlugProvider;
+    private static ISlugProvider slugProvider;
 
     /**
      * Private constructor to prevent instantiation.
@@ -28,7 +28,7 @@ public class SlugRegistry {
      * @throws IllegalArgumentException if the provider is null.
      */
     public static void setSlugProvider(ISlugProvider provider) {
-        ISlugProvider = provider;
+        slugProvider = provider;
     }
 
     /**
@@ -38,10 +38,10 @@ public class SlugRegistry {
      * @throws SlugOperationException if no {@link ISlugProvider} has been set.
      */
     public static ISlugProvider getSlugProvider() {
-        if (ISlugProvider == null) {
+        if (slugProvider == null) {
             throw new SlugOperationException("ISlugProvider not set");
         }
 
-        return ISlugProvider;
+        return slugProvider;
     }
 }
