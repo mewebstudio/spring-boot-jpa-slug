@@ -25,7 +25,7 @@ import java.util.Map;
  * is present in the application context and when JPA is available.</p>
  *
  * <p>It initializes and registers the {@link ISlugGenerator} implementation defined in the
- * {@code @EnableSlug(generator = ...)} annotation and sets up a {@link SlugProvider}
+ * {@code @EnableSlug(generator = ...)} annotation and sets up a {@link ISlugProvider}
  * for managing unique slug generation with collision handling.</p>
  *
  * <p>The configuration ensures slugs are unique per entity type by checking the database
@@ -84,7 +84,7 @@ public class SlugAutoConfiguration {
      * Initializes slug generation support after the application context is loaded.
      *
      * <p>This method scans for beans annotated with {@link EnableSlug}, retrieves the
-     * configured {@link ISlugGenerator}, and registers a {@link SlugProvider}
+     * configured {@link ISlugGenerator}, and registers a {@link ISlugProvider}
      * responsible for generating unique slugs for entities implementing {@link ISlugSupport}.</p>
      *
      * @throws Exception if the slug generator cannot be instantiated
@@ -130,7 +130,7 @@ public class SlugAutoConfiguration {
 
                 return slug;
             } catch (Exception e) {
-                throw new SlugOperationException("SlugProvider failed: " + e.getMessage(), e);
+                throw new SlugOperationException("ISlugProvider failed: " + e.getMessage(), e);
             }
         });
     }

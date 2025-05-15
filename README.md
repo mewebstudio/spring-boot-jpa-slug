@@ -105,7 +105,7 @@ public class MyEntity implements ISlugSupport<Long> {
 
 ### 4. Handling Slug Generation
 
-Slugs are automatically generated when entities are created or updated, and they can be customized using the logic provided in the SlugProvider. The system will also ensure uniqueness by checking against the existing slugs in the database.
+Slugs are automatically generated when entities are created or updated, and they can be customized using the logic provided in the ISlugProvider. The system will also ensure uniqueness by checking against the existing slugs in the database.
 
 ## 📘 API Overview
 
@@ -157,20 +157,20 @@ public class SlugUtil {
 
 `SlugRegistry`
 
-A registry to manage the global `SlugProvider` instance.
+A registry to manage the global `ISlugProvider` instance.
 ```java
 public class SlugRegistry {
-    public static void setSlugProvider(SlugProvider provider);
+    public static void setISlugProvider(ISlugProvider provider);
 
-    public static SlugProvider getSlugProvider();
+    public static ISlugProvider getISlugProvider();
 }
 ```
 
-`SlugProvider`
+`ISlugProvider`
 
 An interface for generating slugs based on an entity and a base slug string.
 ```java
-public interface SlugProvider {
+public interface ISlugProvider {
     String generateSlug(Object entity, String slug);
 }
 ```

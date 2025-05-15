@@ -56,9 +56,9 @@ public class SlugListener {
                 throw new SlugOperationException("Generated base slug is null or blank for value: " + sourceValue);
             }
 
-            SlugProvider provider = SlugRegistry.getSlugProvider();
+            ISlugProvider provider = SlugRegistry.getSlugProvider();
             if (provider == null) {
-                throw new SlugOperationException("No SlugProvider registered in SlugRegistry.");
+                throw new SlugOperationException("No ISlugProvider registered in SlugRegistry.");
             }
 
             String generatedSlug = provider.generateSlug(entity, slug);

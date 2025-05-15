@@ -1,19 +1,19 @@
 package com.mewebstudio.springboot.jpa.slug;
 
 /**
- * Registry for managing the global {@link SlugProvider}.
+ * Registry for managing the global {@link ISlugProvider}.
  * <p>
- * This class is used to register and retrieve the {@link SlugProvider} used for generating slugs.
- * The {@link SlugProvider} is intended to be set at the application startup and used throughout the lifecycle
+ * This class is used to register and retrieve the {@link ISlugProvider} used for generating slugs.
+ * The {@link ISlugProvider} is intended to be set at the application startup and used throughout the lifecycle
  * of slug generation operations.
  */
 public class SlugRegistry {
     /**
-     * The global {@link SlugProvider} instance.
+     * The global {@link ISlugProvider} instance.
      * <p>
      * This instance is used for generating slugs across the application.
      */
-    private static SlugProvider slugProvider;
+    private static ISlugProvider ISlugProvider;
 
     /**
      * Private constructor to prevent instantiation.
@@ -22,26 +22,26 @@ public class SlugRegistry {
     }
 
     /**
-     * Sets the {@link SlugProvider} to be used globally for slug generation.
+     * Sets the {@link ISlugProvider} to be used globally for slug generation.
      *
-     * @param provider The {@link SlugProvider} instance to set.
+     * @param provider The {@link ISlugProvider} instance to set.
      * @throws IllegalArgumentException if the provider is null.
      */
-    public static void setSlugProvider(SlugProvider provider) {
-        slugProvider = provider;
+    public static void setSlugProvider(ISlugProvider provider) {
+        ISlugProvider = provider;
     }
 
     /**
-     * Retrieves the currently set {@link SlugProvider}.
+     * Retrieves the currently set {@link ISlugProvider}.
      *
-     * @return The current {@link SlugProvider}.
-     * @throws SlugOperationException if no {@link SlugProvider} has been set.
+     * @return The current {@link ISlugProvider}.
+     * @throws SlugOperationException if no {@link ISlugProvider} has been set.
      */
-    public static SlugProvider getSlugProvider() {
-        if (slugProvider == null) {
-            throw new SlugOperationException("SlugProvider not set");
+    public static ISlugProvider getSlugProvider() {
+        if (ISlugProvider == null) {
+            throw new SlugOperationException("ISlugProvider not set");
         }
 
-        return slugProvider;
+        return ISlugProvider;
     }
 }

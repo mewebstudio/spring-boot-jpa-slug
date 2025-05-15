@@ -5,7 +5,7 @@ package com.mewebstudio.springboot.jpa.slug;
  * <p>
  * Provides logic for generating unique slugs based on an entity and a base slug string.
  */
-public interface SlugProvider {
+public interface ISlugProvider {
     /**
      * Generates a slug for the given entity using the provided base slug.
      * <p>
