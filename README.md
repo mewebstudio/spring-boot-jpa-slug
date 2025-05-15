@@ -160,9 +160,9 @@ public class SlugUtil {
 A registry to manage the global `ISlugProvider` instance.
 ```java
 public class SlugRegistry {
-    public static void setISlugProvider(ISlugProvider provider);
+    public static void setSlugProvider(ISlugProvider provider);
 
-    public static ISlugProvider getISlugProvider();
+    public static ISlugProvider getSlugProvider();
 }
 ```
 
