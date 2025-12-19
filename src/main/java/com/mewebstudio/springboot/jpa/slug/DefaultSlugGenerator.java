@@ -31,7 +31,7 @@ public class DefaultSlugGenerator implements ISlugGenerator {
      *   <li>Converting the string to lowercase</li>
      *   <li>Removing any characters that are not alphanumeric, spaces, or hyphens</li>
      *   <li>Replacing one or more spaces with a single hyphen</li>
-     *   <li>Ensuring that multiple hyphens are replaced by a single hyphen</li>
+     *   <li>Ensuring that a single hyphen replaces multiple hyphens</li>
      * </ul>
      *
      * @param input the input string to generate a slug from. May be {@code null}.
