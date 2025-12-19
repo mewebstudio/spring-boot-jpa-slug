@@ -108,14 +108,14 @@ public class SlugAutoConfiguration {
                 int i = 2;
 
                 Object entityId = entity instanceof ISlugSupport<?>
-                    ? ((ISlugSupport<?>) entity).getId()
-                    : null;
+                        ? ((ISlugSupport<?>) entity).getId()
+                        : null;
 
                 int attempt = 0;
                 while (slugExists(entity.getClass(), slug, entityId, compositeConstraintFields)) {
                     if (attempt++ >= MAX_ATTEMPTS) {
                         throw new SlugOperationException(
-                            "Unable to generate unique slug for: " + base + ", after " + MAX_ATTEMPTS + " attempts");
+                                "Unable to generate unique slug for: " + base + ", after " + MAX_ATTEMPTS + " attempts");
                     }
                     slug = base + "-" + i++;
                 }
@@ -143,9 +143,6 @@ public class SlugAutoConfiguration {
             if (slug == null || slug.isBlank()) {
                 return false;
             }
-
-            // Flush pending changes to make them visible to this query
-            entityManager.flush();
 
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Long> query = cb.createQuery(Long.class);
@@ -179,7 +176,17 @@ public class SlugAutoConfiguration {
 
             query.select(cb.count(root)).where(predicates.toArray(new Predicate[0]));
 
-            Long count = entityManager.createQuery(query).getSingleResult();
+            Long count;
+            try {
+                // Disable an auto-flush to prevent "detached entity passed to persist" errors
+                // This happens when the entity has ID but is not yet managed
+                var typedQuery = entityManager.createQuery(query);
+                typedQuery.setFlushMode(jakarta.persistence.FlushModeType.COMMIT);
+                count = typedQuery.getSingleResult();
+            } catch (Exception ex) {
+                // Query failed, return 0 to indicate no existing slug found
+                count = 0L;
+            }
             return count > 0;
         } catch (Exception e) {
             return false;
