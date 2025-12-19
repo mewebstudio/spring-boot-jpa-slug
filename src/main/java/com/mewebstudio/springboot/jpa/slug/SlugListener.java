@@ -1,11 +1,15 @@
 package com.mewebstudio.springboot.jpa.slug;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JPA entity listener for generating and updating slugs on entities
@@ -61,9 +65,12 @@ public class SlugListener {
                 throw new SlugOperationException("No ISlugProvider registered in SlugRegistry.");
             }
 
-            String generatedSlug = provider.generateSlug(entity, slug);
+            // Extract composite unique constraint fields (e.g., locale for locale+slug uniqueness)
+            Map<String, Object> constraintFields = getCompositeUniqueConstraintFields(entity);
+
+            String generatedSlug = provider.generateSlug(entity, slug, constraintFields);
             if (generatedSlug == null || generatedSlug.isBlank()) {
-                throw new SlugOperationException("Generated slug is null or blank for base: " + slug);
+                throw new SlugOperationException("Generated slug is blank for base: " + slug);
             }
 
             slugEntity.setSlug(generatedSlug);
@@ -118,4 +125,102 @@ public class SlugListener {
 
         return null;
     }
+
+    /**
+     * Extracts composite unique constraint field values from the entity.
+     * For example, if there's a unique constraint on (locale, slug), this will return {"locale": "en-US"}.
+     *
+     * @param entity The entity to inspect.
+     * @return Map of field names to their current values that are part of composite unique constraints with slug.
+     */
+    private Map<String, Object> getCompositeUniqueConstraintFields(Object entity) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            Table tableAnnotation = entity.getClass().getAnnotation(Table.class);
+
+            if (tableAnnotation != null) {
+                // Find unique constraints that include "slug"
+                for (var constraint : tableAnnotation.uniqueConstraints()) {
+                    String[] columnNames = constraint.columnNames();
+
+                    if (containsSlug(columnNames) && columnNames.length > 1) {
+                        // This is a composite constraint with slug, extract other field values
+                        for (String columnName : columnNames) {
+                            if (!"slug".equals(columnName)) {
+                                // Find the field with this column name
+                                Object fieldValue = findFieldValueByColumnName(entity, columnName);
+                                if (fieldValue != null) {
+                                    result.put(columnName, fieldValue);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // If we can't determine composite constraints, return an empty map (fallback to old behavior)
+        }
+
+        return result;
+    }
+
+    /**
+     * Checks if the array contains a "slug" column.
+     *
+     * @param columnNames Array of column names
+     * @return true if contains "slug", false otherwise
+     */
+    private boolean containsSlug(String[] columnNames) {
+        for (String name : columnNames) {
+            if ("slug".equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finds a field value by its column name from @Column annotation.
+     *
+     * @param entity     The entity to inspect.
+     * @param columnName The database column name.
+     * @return The field value, or null if not found.
+     */
+    private Object findFieldValueByColumnName(Object entity, String columnName) {
+        for (Field field : entity.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+
+            // Check @Column annotation
+            Column columnAnnotation = field.getAnnotation(Column.class);
+            if (columnAnnotation != null && columnName.equals(columnAnnotation.name())) {
+                try {
+                    return field.get(entity);
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            // Fallback: if field name matches column name (snake_case vs. camelCase)
+            if (field.getName().equalsIgnoreCase(columnName) || toSnakeCase(field.getName()).equals(columnName)) {
+                try {
+                    return field.get(entity);
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Converts camelCase to snake_case.
+     *
+     * @param str The camelCase string
+     * @return The snake_case string
+     */
+    private String toSnakeCase(String str) {
+        return str.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
 }
+
