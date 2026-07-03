@@ -1,8 +1,8 @@
 # Slug Generator for Spring Boot
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Maven badge](https://maven-badges.herokuapp.com/maven-central/com.mewebstudio/spring-boot-jpa-slug/badge.svg?style=flat)](https://central.sonatype.com/artifact/com.mewebstudio/spring-boot-jpa-slug)
-[![javadoc](https://javadoc.io/badge2/com.mewebstudio/spring-boot-jpa-slug/javadoc.svg)](https://javadoc.io/doc/com.mewebstudio/spring-boot-jpa-slug)
+[![Maven Central](https://img.shields.io/maven-central/v/com.mewebstudio/spring-boot-jpa-slug)](https://central.sonatype.com/artifact/com.mewebstudio/spring-boot-jpa-slug)
+[![Javadoc](https://javadoc.io/badge2/com.mewebstudio/spring-boot-jpa-slug/javadoc.svg)](https://javadoc.io/doc/com.mewebstudio/spring-boot-jpa-slug)
 
 A simple and customizable slug generation solution for Spring Boot applications, designed to easily create and manage slugs for entities. This package integrates with JPA entities and provides a flexible way to generate unique slugs for your models.
 
