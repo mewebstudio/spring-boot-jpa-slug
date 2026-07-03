@@ -1,14 +1,16 @@
 package com.mewebstudio.springboot.jpa.slug;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("DefaultSlugGenerator Test Suite")
 class DefaultSlugGeneratorTest {
-
     private final ISlugGenerator slugGenerator = new DefaultSlugGenerator();
 
     @Test
+    @DisplayName("Test generating slug with valid input")
     void testGenerate_withValidInput() {
         // Test with valid input
         String input = "Hello World! This is a test.";
@@ -21,6 +23,7 @@ class DefaultSlugGeneratorTest {
     }
 
     @Test
+    @DisplayName("Test generating slug with null input")
     void testGenerate_withNullInput() {
         // Test with null input
         String input = null;
@@ -31,6 +34,7 @@ class DefaultSlugGeneratorTest {
     }
 
     @Test
+    @DisplayName("Test generating slug with empty input")
     void testGenerate_withEmptyInput() {
         // Test with empty input
         String input = "";
@@ -41,6 +45,7 @@ class DefaultSlugGeneratorTest {
     }
 
     @Test
+    @DisplayName("Test generating slug with input containing special characters")
     void testGenerate_withInputContainingSpecialCharacters() {
         // Test with input containing special characters
         String input = "This is #1! @Slug-test.";
@@ -53,6 +58,7 @@ class DefaultSlugGeneratorTest {
     }
 
     @Test
+    @DisplayName("Test generating slug with input containing multiple spaces")
     void testGenerate_withInputContainingMultipleSpaces() {
         // Test with input containing multiple spaces
         String input = "This   is  a   test";
@@ -64,6 +70,7 @@ class DefaultSlugGeneratorTest {
     }
 
     @Test
+    @DisplayName("Test generating slug with input containing multiple hyphens")
     void testGenerate_withInputContainingMultipleHyphens() {
         // Test with input containing multiple hyphens
         String input = "This---is---a----test";

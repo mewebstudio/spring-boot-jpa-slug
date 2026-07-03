@@ -11,8 +11,7 @@ import java.util.Map;
 public interface ISlugProvider {
     /**
      * Generates a slug for the given entity using the provided base slug.
-     * <p>
-     * Implementations may apply additional rules such as uniqueness checks, suffixes, or normalization.
+     * <p>Implementations may apply additional rules such as uniqueness checks, suffixes, or normalization.</p>
      *
      * @param entity                    The entity for which the slug is being generated.
      * @param slug                      The base slug string derived from the entity's annotated {@link SlugField}.
