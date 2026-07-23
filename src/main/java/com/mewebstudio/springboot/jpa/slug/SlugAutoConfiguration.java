@@ -17,6 +17,7 @@ import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -261,7 +262,9 @@ public class SlugAutoConfiguration {
             EventListenerRegistry registry =
                 sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
             if (registry != null) {
-                registry.appendListeners(EventType.POST_UPDATE, new SlugCascadeListener());
+                PlatformTransactionManager transactionManager = context.getBean(PlatformTransactionManager.class);
+                registry.appendListeners(
+                    EventType.POST_UPDATE, new SlugCascadeListener(transactionManager, entityManager));
             }
         } catch (Exception e) {
             // If Hibernate is not the JPA provider, cascade slug updates are silently skipped
