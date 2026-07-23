@@ -5,6 +5,7 @@ import jakarta.persistence.FlushModeType;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -19,14 +20,37 @@ import java.util.List;
  * needed on the intermediate entity (e.g. {@code Category}).</p>
  */
 public class SlugCascadeListener implements PostUpdateEventListener {
+    /**
+     * Cached reflective handle to {@code PostUpdateEvent.getSession()}, resolved by name so it works
+     * regardless of the return type declared by the Hibernate version on the classpath
+     * (Hibernate 6 → {@code EventSource}, Hibernate 7 → {@code SharedSessionContractImplementor}).
+     */
+    private static final Method SESSION_ACCESSOR;
+
+    static {
+        try {
+            SESSION_ACCESSOR = PostUpdateEvent.class.getMethod("getSession");
+        } catch (NoSuchMethodException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    // The EntityManager is the event's active Hibernate session — it is borrowed, not owned, and must
+    // not be closed here (doing so would break the surrounding transaction), so the resource warning is
+    // intentionally suppressed.
+    @SuppressWarnings("resource")
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         Object updatedEntity = event.getEntity();
         List<SlugRegistry.CascadeDependency> dependents = SlugRegistry.getCascadeDependents(updatedEntity.getClass());
         if (dependents.isEmpty()) return;
 
-        // event.getSession() implements EntityManager in Hibernate 6
-        EntityManager em = (EntityManager) event.getSession();
+        // Resolve the session reflectively: PostUpdateEvent.getSession()'s declared return type changed
+        // between Hibernate 6 (EventSource) and Hibernate 7 (SharedSessionContractImplementor). Calling
+        // it directly binds the bytecode to one return-type descriptor and throws NoSuchMethodError on
+        // the other. Reflection resolves the method by name; the concrete session is an EntityManager
+        // on both versions.
+        EntityManager em = resolveEntityManager(event);
 
         for (SlugRegistry.CascadeDependency dep : dependents) {
             // Both values validated at registration time; double-check here for defense-in-depth
@@ -66,6 +90,14 @@ public class SlugCascadeListener implements PostUpdateEventListener {
             } catch (Exception e) {
                 // Cascade failure must not block the original update
             }
+        }
+    }
+
+    private static EntityManager resolveEntityManager(PostUpdateEvent event) {
+        try {
+            return (EntityManager) SESSION_ACCESSOR.invoke(event);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Unable to resolve Hibernate session from PostUpdateEvent", e);
         }
     }
 
